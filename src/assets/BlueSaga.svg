@@ -1,0 +1,27 @@
+<svg width="260" height="80" viewBox="0 0 260 80" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="oceanGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#3B82F6"/>
+                <stop offset="50%" stop-color="#60A5FA"/>
+                <stop offset="100%" stop-color="#93C5FD"/>
+              </linearGradient>
+              <linearGradient id="bagGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#60A5FA"/>
+                <stop offset="100%" stop-color="#3B82F6"/>
+              </linearGradient>
+            </defs>
+            <g opacity="0.3">
+              <path d="M8 48 Q 18 38, 28 48 T 48 48 T 68 48" stroke="#93C5FD" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </g>
+            <g opacity="0.6">
+              <path d="M10 42 Q 22 30, 34 42 T 58 42 T 82 42" stroke="url(#oceanGrad2)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            </g>
+            <path d="M12 35 Q 25 22, 38 35 T 64 35 T 88 32" stroke="url(#oceanGrad2)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <g transform="translate(72, 18)">
+              <path d="M4 8 L2 22 C2 23 2.5 24 4 24 L16 24 C17.5 24 18 23 18 22 L16 8 Z" fill="url(#bagGrad2)" stroke="#60A5FA" stroke-width="1.5"/>
+              <path d="M6 8 C6 5, 8 3, 10 3 C12 3, 14 5, 14 8" stroke="#60A5FA" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <circle cx="10" cy="15" r="1.5" fill="#93C5FD" opacity="0.8"/>
+            </g>
+            <text x="105" y="46" font-size="36" font-family="'Inter', -apple-system, sans-serif" fill="#FFFFFF" font-weight="700" letter-spacing="-0.03em">BlueSaga</text>
+            <text x="106" y="58" font-size="10" font-family="'Inter', -apple-system, sans-serif" fill="#94A3B8" font-weight="500" letter-spacing="0.05em">OCEAN OF DEALS</text>
+          </svg>
