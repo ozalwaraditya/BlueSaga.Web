@@ -32,6 +32,36 @@ function Header() {
               Product
             </NavLink>
           </li>
+          <li className="dropdown">
+            <span className="dropdown-title">Services ▾</span>
+
+            <ul className="dropdown-menu">
+              <li>
+                <NavLink
+                  to="/management/coupons"
+                  className={handleActivateNavigation}
+                >
+                  Coupons
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/management/products"
+                  className={handleActivateNavigation}
+                >
+                  Products
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/management/inventory"
+                  className={handleActivateNavigation}
+                >
+                  Inventory
+                </NavLink>
+              </li>
+            </ul>
+          </li>
         </ul>
       </div>
       {/* Middle */}

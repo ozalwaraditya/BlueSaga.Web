@@ -1,7 +1,9 @@
 import { useState } from "react";
 import "./Register.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { auth_api } from "../../utility/url";
 
 function Register() {
   const [formdata, setFormdata] = useState({
@@ -14,6 +16,7 @@ function Register() {
 
   const [disableStatus, setDisableStatus] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,26 +30,45 @@ function Register() {
     setLoading(true);
 
     try {
-      const response = await axios.get("https://localhost:7001/api/CouponAPI");
-      console.log(response.data); // Access the actual data here
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      const registerPromise = axios.post(
+        auth_api + "/api/auth/register",
+        {
+          Name: formdata.username,
+          Email: formdata.email,
+          PhoneNumber: formdata.phoneNumber,
+          Password: formdata.password,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      toast.promise(registerPromise, {
+        loading: "Registering user...",
+        success: (response) => {
+          if (response.data?.isSuccess) {
+            navigate("/login");
+          }
+          return response.data?.message || "Registration successful";
+        },
+        error: (error) => {
+          if (error.response) {
+            return (
+              error.response.data?.message ||
+              `Request failed (${error.response.status})`
+            );
+          }
+          return error.message || "Unexpected error occurred";
+        },
+      });
+
+      await registerPromise;
+    } catch (err) {
+      console.error("Unhandled error:", err);
+    } finally {
+      setLoading(false);
     }
-    // setTimeout(() => {
-    //   console.log("Form Data:", formdata);
-
-    //   setLoading(false);
-
-    //   setFormdata({
-    //     username: "",
-    //     email: "",
-    //     phoneNumber: "",
-    //     password: "",
-    //     confirmPassword: "",
-    //   });
-    // }, 2000);
-
-    setLoading(false);
   };
 
   // useEffect(() => {

@@ -1,6 +1,9 @@
 import { Route, Routes } from "react-router-dom";
-import Loader from "../components/ui/Loader";
 import { lazy, Suspense } from "react";
+import CouponMangement from "../pages/admin/CouponMangement";
+import ProductMangement from "../pages/admin/ProductMangement";
+import InventoryManagment from "../pages/admin/InventoryManagment";
+import Loader from "../components/ui/Loader";
 
 const Home = lazy(() => import("../pages/Home/Home"));
 const Register = lazy(() => import("../pages/auth/Register"));
@@ -13,6 +16,9 @@ function AppRouter() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/management/coupons" element={<CouponMangement />} />
+        <Route path="/management/products" element={<ProductMangement />} />
+        <Route path="/management/inventory" element={<InventoryManagment />} />
         <Route path="/loader" element={<Loader />} />
       </Routes>
     </Suspense>
