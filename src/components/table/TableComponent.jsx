@@ -1,11 +1,20 @@
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 import "./TableComponent.css";
 
-function TableComponent({ entity, url }) {
-  const [users, setUsers] = useState([]);
+function TableComponent({
+  entityName,
+  url,
+  columns,
+  columnTableIndex,
+  pageSize,
+}) {
+  const [items, setItems] = useState([]);
+  const [objectColumnNames, setObjectColumnNames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const currentPageRef = useRef(1);
   const [totalPages, setTotalPages] = useState(10);
 
   function handlePrevButton() {
@@ -19,75 +28,129 @@ function TableComponent({ entity, url }) {
   const fetchPaginatedData = async () => {
     const tablePromise = axios.get(url, {
       headers: { "Content-Type": "application/json" },
+      params: { currentPage, pageSize },
       withCredentials: true,
+    });
+
+    toast.promise(tablePromise, {
+      loading: "Fetching " + entityName + "...",
+      success: (response) => {
+        if (response.data.isSuccess) {
+          console.log("Response data: ", response.data.response);
+          const data = response.data.response;
+          const currentItems = data.items;
+
+          if (currentItems.length === 0) {
+            setItems([]);
+            setObjectColumnNames([]);
+            setTotalPages(0);
+            return "No " + entityName + " found";
+          }
+
+          setItems(currentItems);
+          console.log("CurrentItems : ", currentItems);
+
+          let cols = Object.keys(currentItems[0]);
+          cols = columnTableIndex.map((i) => cols[i]);
+          console.log("ObjectColumns : ", cols);
+          setObjectColumnNames(cols);
+          setTotalPages(Math.ceil(data.totalItems / pageSize));
+          return "Done";
+        }
+        throw new Error(response.data.message);
+      },
+      error: (error) => {
+        return (
+          error.response?.data?.message || error.message || "Network Error"
+        );
+      },
     });
 
     try {
       await tablePromise;
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      const data = [
-        { first: "Mark", last: "Otto", handle: "@mdo" },
-        { first: "John", last: "Doe", handle: "@jdoe" },
-        { first: "Mark", last: "Otto", handle: "@mdo" },
-        { first: "John", last: "Doe", handle: "@jdoe" },
-        { first: "Mark", last: "Otto", handle: "@mdo" },
-        { first: "John", last: "Doe", handle: "@jdoe" },
-        { first: "Mark", last: "Otto", handle: "@mdo" },
-        { first: "John", last: "Doe", handle: "@jdoe" },
-        { first: "Mark", last: "Otto", handle: "@mdo" },
-        { first: "John", last: "Doe", handle: "@jdoe" },
-      ];
-      setUsers(data);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    fetchPaginatedData();
+  }, [currentPage]);
+
+  // Calculate empty rows needed to fill the page
+  const emptyRowsCount =
+    items.length < pageSize && items.length > 0 ? pageSize - items.length : 0;
+
   return (
     <div className="content-management">
       <div className="management-header">
-        <h2>{entity} Management</h2>
-        <button className="btn-add">Add New {entity}</button>
+        <h2>{entityName} Management</h2>
+        <button className="btn-add">Add New {entityName}</button>
       </div>
 
-      <table className="table table-striped">
+      <table className="table">
         <thead>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
-            <th scope="col">Actions</th>
+            <th>Sr.No</th>
+            {columns.map((column, index) => (
+              <th key={index}>{column}</th>
+            ))}
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {loading
-            ? Array.from({ length: 10 }).map((_, index) => (
-                <tr key={index}>
-                  <th scope="row">{index + 1}</th>
-                  <td colSpan="4">Loading...</td>
-                </tr>
-              ))
-            : users.map((user, index) => (
-                <tr key={index}>
-                  <th scope="row">{index + 1}</th>
-                  <td>{user.first}</td>
-                  <td>{user.last}</td>
-                  <td>{user.handle}</td>
+          {loading ? (
+            Array.from({ length: pageSize }).map((_, index) => (
+              <tr key={index}>
+                <td
+                  colSpan={columns.length + 2}
+                  style={{ textAlign: "center" }}
+                >
+                  Loading...
+                </td>
+              </tr>
+            ))
+          ) : items.length === 0 ? (
+            <tr>
+              <td
+                colSpan={columns.length + 2}
+                style={{ textAlign: "center", padding: "2rem" }}
+              >
+                <div style={{ color: "#666", fontSize: "1.1rem" }}>
+                  No {entityName} found
+                </div>
+              </td>
+            </tr>
+          ) : (
+            <>
+              {items.map((item, rowIndex) => (
+                <tr key={rowIndex}>
+                  <td>{(currentPage - 1) * pageSize + rowIndex + 1}</td>
+                  {objectColumnNames.map((columnName, colIndex) => (
+                    <td key={colIndex}>{item[columnName]}</td>
+                  ))}
                   <td>
                     <button className="btn-edit">Edit</button>
                     <button className="btn-delete">Delete</button>
                   </td>
                 </tr>
               ))}
+              {Array.from({ length: emptyRowsCount }).map((_, index) => (
+                <tr key={`empty-${index}`} style={{ height: "49px" }}>
+                  <td colSpan={columns.length + 2}>&nbsp;</td>
+                </tr>
+              ))}
+            </>
+          )}
         </tbody>
       </table>
+
       <div className="pagination">
         <button onClick={handlePrevButton}>Previous</button>
         <span>
-          Page {currentPage} of {totalPages}
+          Page {totalPages === 0 ? 0 : currentPage} of {totalPages}
         </span>
         <button onClick={handleNextButton}>Next</button>
       </div>

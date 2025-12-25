@@ -1,14 +1,14 @@
 import TableComponent from "../../components/table/TableComponent";
 import { product_api } from "../../utility/url";
 
-function InventoryManagment() {
-  const columns = ["Product Name", "Minimum Amount", "Discoupon Amount"];
+function CategoryManagement() {
+  const columns = ["Category Name"];
   const columnTableIndex = [1];
   return (
     <>
       <TableComponent
-        entityName="Inventory"
-        url={product_api + "/inventory"}
+        entityName="Category"
+        url={product_api + "/api/Category/GetPaginatedCategories"}
         columns={columns}
         columnTableIndex={columnTableIndex}
         pageSize={15}
@@ -17,4 +17,4 @@ function InventoryManagment() {
   );
 }
 
-export default InventoryManagment;
+export default CategoryManagement;

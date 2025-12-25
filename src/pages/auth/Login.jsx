@@ -58,7 +58,7 @@ function Login() {
           return "Logged in successfully!";
         }
 
-        throw new Error(response.data.response.errorMessage);
+        throw new Error(response.data.message);
       },
       error: (error) => {
         return error.response?.data?.message || error.message || "Login failed";

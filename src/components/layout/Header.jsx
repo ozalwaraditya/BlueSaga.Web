@@ -38,6 +38,14 @@ function Header() {
             <ul className="dropdown-menu">
               <li>
                 <NavLink
+                  to="/management/category"
+                  className={handleActivateNavigation}
+                >
+                  Category
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
                   to="/management/coupons"
                   className={handleActivateNavigation}
                 >
