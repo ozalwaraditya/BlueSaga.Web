@@ -2,8 +2,8 @@ import TableComponent from "../../components/table/TableComponent";
 import { product_api } from "../../utility/url";
 
 function InventoryManagment() {
-  const columns = ["Product Name", "Minimum Amount", "Discoupon Amount"];
-  const columnTableIndex = [1];
+  const columns = ["Product Name", "Stock Quantity", "Reserved Stock"];
+  const columnTableIndex = [2, 4, 3];
   return (
     <>
       <TableComponent
@@ -12,6 +12,7 @@ function InventoryManagment() {
         columns={columns}
         columnTableIndex={columnTableIndex}
         pageSize={15}
+        showActionButton={false}
       />
     </>
   );

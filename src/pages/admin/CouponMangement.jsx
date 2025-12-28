@@ -12,6 +12,7 @@ function CouponMangement() {
         columns={columns}
         columnTableIndex={columnTableIndex}
         pageSize={15}
+        addButtonNavigatePath={"/management/coupons-form"}
       />
     </>
   );

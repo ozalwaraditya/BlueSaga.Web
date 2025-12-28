@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import "./TableComponent.css";
+import { useNavigate } from "react-router-dom";
 
 function TableComponent({
   entityName,
@@ -9,13 +10,15 @@ function TableComponent({
   columns,
   columnTableIndex,
   pageSize,
+  addButtonNavigatePath,
+  showActionButton = true,
 }) {
   const [items, setItems] = useState([]);
   const [objectColumnNames, setObjectColumnNames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const currentPageRef = useRef(1);
   const [totalPages, setTotalPages] = useState(10);
+  const navigate = useNavigate();
 
   function handlePrevButton() {
     setCurrentPage((prev) => (prev > 1 ? prev - 1 : 1));
@@ -87,7 +90,14 @@ function TableComponent({
     <div className="content-management">
       <div className="management-header">
         <h2>{entityName} Management</h2>
-        <button className="btn-add">Add New {entityName}</button>
+        {showActionButton && (
+          <button
+            onClick={() => navigate(addButtonNavigatePath)}
+            className="btn-add"
+          >
+            Add New {entityName}
+          </button>
+        )}
       </div>
 
       <table className="table">
@@ -97,7 +107,7 @@ function TableComponent({
             {columns.map((column, index) => (
               <th key={index}>{column}</th>
             ))}
-            <th>Actions</th>
+            {showActionButton && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -105,7 +115,7 @@ function TableComponent({
             Array.from({ length: pageSize }).map((_, index) => (
               <tr key={index}>
                 <td
-                  colSpan={columns.length + 2}
+                  colSpan={columns.length + (showActionButton ? 2 : 1)}
                   style={{ textAlign: "center" }}
                 >
                   Loading...
@@ -115,7 +125,7 @@ function TableComponent({
           ) : items.length === 0 ? (
             <tr>
               <td
-                colSpan={columns.length + 2}
+                colSpan={columns.length + (showActionButton ? 2 : 1)}
                 style={{ textAlign: "center", padding: "2rem" }}
               >
                 <div style={{ color: "#666", fontSize: "1.1rem" }}>
@@ -131,15 +141,30 @@ function TableComponent({
                   {objectColumnNames.map((columnName, colIndex) => (
                     <td key={colIndex}>{item[columnName]}</td>
                   ))}
-                  <td>
-                    <button className="btn-edit">Edit</button>
-                    <button className="btn-delete">Delete</button>
-                  </td>
+                  {showActionButton && (
+                    <td>
+                      <button
+                        onClick={() => {
+                          navigate(
+                            addButtonNavigatePath +
+                              "/" +
+                              item[Object.keys(item)[0]]
+                          );
+                        }}
+                        className="btn-edit"
+                      >
+                        Edit
+                      </button>
+                      <button className="btn-delete">Delete</button>
+                    </td>
+                  )}
                 </tr>
               ))}
               {Array.from({ length: emptyRowsCount }).map((_, index) => (
                 <tr key={`empty-${index}`} style={{ height: "49px" }}>
-                  <td colSpan={columns.length + 2}>&nbsp;</td>
+                  <td colSpan={columns.length + (showActionButton ? 2 : 1)}>
+                    &nbsp;
+                  </td>
                 </tr>
               ))}
             </>

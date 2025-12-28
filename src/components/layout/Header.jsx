@@ -33,7 +33,7 @@ function Header() {
             </NavLink>
           </li>
           <li className="dropdown">
-            <span className="dropdown-title">Services ▾</span>
+            <span className="dropdown-title">Content Management ▾</span>
 
             <ul className="dropdown-menu">
               <li>

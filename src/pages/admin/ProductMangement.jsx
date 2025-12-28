@@ -13,6 +13,7 @@ function ProductMangement() {
         columns={columns}
         columnTableIndex={columnTableIndex}
         pageSize={15}
+        addButtonNavigatePath={"/management/products-form"}
       />
     </>
   );
