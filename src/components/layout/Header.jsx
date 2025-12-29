@@ -32,44 +32,46 @@ function Header() {
               Product
             </NavLink>
           </li>
-          <li className="dropdown">
-            <span className="dropdown-title">Content Management ▾</span>
+          {currentUser?.roles?.includes("Admin") && (
+            <li className="dropdown">
+              <span className="dropdown-title">Content Management ▾</span>
 
-            <ul className="dropdown-menu">
-              <li>
-                <NavLink
-                  to="/management/category"
-                  className={handleActivateNavigation}
-                >
-                  Category
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/management/coupons"
-                  className={handleActivateNavigation}
-                >
-                  Coupons
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/management/products"
-                  className={handleActivateNavigation}
-                >
-                  Products
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/management/inventory"
-                  className={handleActivateNavigation}
-                >
-                  Inventory
-                </NavLink>
-              </li>
-            </ul>
-          </li>
+              <ul className="dropdown-menu">
+                <li>
+                  <NavLink
+                    to="/management/category"
+                    className={handleActivateNavigation}
+                  >
+                    Category
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/management/coupons"
+                    className={handleActivateNavigation}
+                  >
+                    Coupons
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/management/products"
+                    className={handleActivateNavigation}
+                  >
+                    Products
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/management/inventory"
+                    className={handleActivateNavigation}
+                  >
+                    Inventory
+                  </NavLink>
+                </li>
+              </ul>
+            </li>
+          )}
         </ul>
       </div>
       {/* Middle */}

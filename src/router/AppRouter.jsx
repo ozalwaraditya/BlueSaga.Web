@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import CouponMangement from "../pages/admin/CouponMangement";
 import ProductMangement from "../pages/admin/ProductMangement";
@@ -9,6 +9,7 @@ import PageNotFound from "../components/ui/PageNotFound";
 import CategoryForm from "../pages/admin/category/CategoryForm";
 import CouponForm from "../pages/admin/coupon/CouponForm";
 import ProductForm from "../pages/admin/product/ProductForm";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 const Home = lazy(() => import("../pages/Home/Home"));
 const Register = lazy(() => import("../pages/auth/Register"));
@@ -21,17 +22,25 @@ function AppRouter() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/management/category" element={<CategoryManagement />} />
-        <Route path="/management/category-form" element={<CategoryForm />} />
-        <Route path="/management/category-form/:id" element={<CategoryForm />} />
-        <Route path="/management/coupons" element={<CouponMangement />} />
-        <Route path="/management/coupons-form" element={<CouponForm />} />
-        <Route path="/management/coupons-form/:id" element={<CouponForm />} />
-        <Route path="/management/products" element={<ProductMangement />} />
-        <Route path="/management/products-form" element={<ProductForm />} />
-        <Route path="/management/products-form/:id" element={<ProductForm />} />
-        <Route path="/management/inventory" element={<InventoryManagment />} />
-        <Route path="/loader" element={<Loader />} />
+        <Route
+          path="/management/*"
+          element={
+            <ProtectedRoutes allowedRoles={["Admin"]}>
+              <Outlet />
+            </ProtectedRoutes>
+          }
+        >
+          <Route path="category" element={<CategoryManagement />} />
+          <Route path="category-form" element={<CategoryForm />} />
+          <Route path="category-form/:id" element={<CategoryForm />} />
+          <Route path="coupons" element={<CouponMangement />} />
+          <Route path="coupons-form" element={<CouponForm />} />
+          <Route path="coupons-form/:id" element={<CouponForm />} />
+          <Route path="products" element={<ProductMangement />} />
+          <Route path="products-form" element={<ProductForm />} />
+          <Route path="products-form/:id" element={<ProductForm />} />
+          <Route path="inventory" element={<InventoryManagment />} />
+        </Route>
         <Route path="/*" element={<PageNotFound />} />
       </Routes>
     </Suspense>

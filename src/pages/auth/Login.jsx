@@ -47,10 +47,10 @@ function Login() {
       loading: "Logging in...",
       success: (response) => {
         if (response.data.isSuccess) {
-          const { name, email, phoneNumber } = response.data.response.user;
+          const { name, email, phoneNumber, roles } =
+            response.data.response.user;
           const { token } = response.data.response.token;
-
-          setAppUser({ name, email, phoneNumber });
+          setAppUser({ name, email, phoneNumber, roles });
           // optionally store token
           // localStorage.setItem("token", token);
 
