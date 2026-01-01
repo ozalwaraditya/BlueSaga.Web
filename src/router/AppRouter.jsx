@@ -10,6 +10,7 @@ import CategoryForm from "../pages/admin/category/CategoryForm";
 import CouponForm from "../pages/admin/coupon/CouponForm";
 import ProductForm from "../pages/admin/product/ProductForm";
 import ProtectedRoutes from "./ProtectedRoutes";
+import Products from "../pages/products/Products";
 
 const Home = lazy(() => import("../pages/Home/Home"));
 const Register = lazy(() => import("../pages/auth/Register"));
@@ -41,6 +42,7 @@ function AppRouter() {
           <Route path="products-form/:id" element={<ProductForm />} />
           <Route path="inventory" element={<InventoryManagment />} />
         </Route>
+        <Route path="/products" element={<Products />} />
         <Route path="/*" element={<PageNotFound />} />
       </Routes>
     </Suspense>

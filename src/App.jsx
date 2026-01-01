@@ -1,5 +1,4 @@
 import { Toaster } from "react-hot-toast";
-import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
 import AppRouter from "./router/AppRouter";
 
@@ -8,7 +7,6 @@ function App() {
     <>
       <Header />
       <AppRouter />
-      <Footer />
       <Toaster />
     </>
   );

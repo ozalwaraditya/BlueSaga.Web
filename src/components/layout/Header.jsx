@@ -28,8 +28,8 @@ function Header() {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/product" className={handleActivateNavigation}>
-              Product
+            <NavLink to="/products" className={handleActivateNavigation}>
+              Products
             </NavLink>
           </li>
           {currentUser?.roles?.includes("Admin") && (
