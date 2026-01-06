@@ -3,10 +3,12 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import "./TableComponent.css";
 import { useNavigate } from "react-router-dom";
+import { access_token } from "../../utility/url";
 
 function TableComponent({
   entityName,
   url,
+  deleteUrl,
   columns,
   columnTableIndex,
   pageSize,
@@ -29,10 +31,14 @@ function TableComponent({
   }
 
   const fetchPaginatedData = async () => {
+    const token = localStorage.getItem(access_token);
+
     const tablePromise = axios.get(url, {
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       params: { currentPage, pageSize },
-      withCredentials: true,
     });
 
     toast.promise(tablePromise, {
@@ -75,6 +81,47 @@ function TableComponent({
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (itemId) => {
+    if (
+      !window.confirm(`Are you sure you want to delete this ${entityName}?`)
+    ) {
+      return;
+    }
+
+    const token = localStorage.getItem(access_token);
+    console.log("url : ", `${deleteUrl}/${itemId}`);
+    const deletePromise = axios.delete(`${deleteUrl}/${itemId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    toast.promise(deletePromise, {
+      loading: `Deleting ${entityName}...`,
+      success: (response) => {
+        if (response.data.isSuccess) {
+          fetchPaginatedData();
+          return `${entityName} deleted successfully`;
+        }
+        throw new Error(response.data.message);
+      },
+      error: (error) => {
+        return (
+          error.response?.data?.message ||
+          error.message ||
+          `Failed to delete ${entityName}`
+        );
+      },
+    });
+
+    try {
+      await deletePromise;
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -155,7 +202,12 @@ function TableComponent({
                       >
                         Edit
                       </button>
-                      <button className="btn-delete">Delete</button>
+                      <button
+                        onClick={() => handleDelete(item[Object.keys(item)[0]])}
+                        className="btn-delete"
+                      >
+                        Delete
+                      </button>
                     </td>
                   )}
                 </tr>

@@ -1,4 +1,4 @@
-import { auth_api } from "../../utility/url.js";
+import { access_token, auth_api } from "../../utility/url.js";
 import { useState } from "react";
 import "./Register.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -47,12 +47,13 @@ function Login() {
       loading: "Logging in...",
       success: (response) => {
         if (response.data.isSuccess) {
-          const { name, email, phoneNumber, roles } =
+          const { id, name, email, phoneNumber, roles } =
             response.data.response.user;
-          const { token } = response.data.response.token;
-          setAppUser({ name, email, phoneNumber, roles });
+          const token = response.data.response.token;
+          console.log("token", token);
+          setAppUser({ userId: id, name, email, phoneNumber, roles });
           // optionally store token
-          // localStorage.setItem("token", token);
+          localStorage.setItem(access_token, token);
 
           navigate("/");
           return "Logged in successfully!";

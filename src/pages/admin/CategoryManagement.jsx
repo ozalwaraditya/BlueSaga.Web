@@ -9,6 +9,7 @@ function CategoryManagement() {
       <TableComponent
         entityName="Category"
         url={product_api + "/api/Category/GetPaginatedCategories"}
+        deleteUrl={product_api + "/api/Category/DeleteCategory"}
         columns={columns}
         columnTableIndex={columnTableIndex}
         pageSize={15}

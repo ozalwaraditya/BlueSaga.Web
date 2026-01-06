@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { auth_api } from "../utility/url";
+import { access_token, auth_api } from "../utility/url";
 import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext(null);
@@ -24,6 +24,7 @@ function AuthProvider({ children }) {
       {
         loading: "Logging out...",
         success: () => {
+          localStorage.removeItem(access_token);
           localStorage.removeItem("currentUser");
           setCurrentUser(null);
           navigate("/");

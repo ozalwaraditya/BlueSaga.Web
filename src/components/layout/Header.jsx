@@ -32,6 +32,26 @@ function Header() {
               Products
             </NavLink>
           </li>
+          {currentUser != null && (
+            <Link to="/shopping-cart">
+              <i
+                className="bi bi-cart-check-fill"
+                style={{
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                  color: "white",
+                  transition: "transform 0.2s ease-in-out",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.2)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+              ></i>
+            </Link>
+          )}
+
           {currentUser?.roles?.includes("Admin") && (
             <li className="dropdown">
               <span className="dropdown-title">Content Management ▾</span>

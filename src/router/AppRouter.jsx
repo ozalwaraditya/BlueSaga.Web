@@ -11,6 +11,7 @@ import CouponForm from "../pages/admin/coupon/CouponForm";
 import ProductForm from "../pages/admin/product/ProductForm";
 import ProtectedRoutes from "./ProtectedRoutes";
 import Products from "../pages/products/Products";
+import ShoppingCart from "../pages/customer/ShoppingCart";
 
 const Home = lazy(() => import("../pages/Home/Home"));
 const Register = lazy(() => import("../pages/auth/Register"));
@@ -42,6 +43,7 @@ function AppRouter() {
           <Route path="products-form/:id" element={<ProductForm />} />
           <Route path="inventory" element={<InventoryManagment />} />
         </Route>
+        <Route path="shopping-cart" element={<ShoppingCart />} />
         <Route path="/products" element={<Products />} />
         <Route path="/*" element={<PageNotFound />} />
       </Routes>

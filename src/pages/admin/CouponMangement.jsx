@@ -9,6 +9,7 @@ function CouponMangement() {
       <TableComponent
         entityName="Coupon"
         url={coupon_api + "/api/CouponAPI"}
+        deleteUrl={coupon_api + "/api/CouponAPI"}
         columns={columns}
         columnTableIndex={columnTableIndex}
         pageSize={15}

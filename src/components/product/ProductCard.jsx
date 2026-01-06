@@ -1,9 +1,15 @@
 import { useState, useMemo } from "react";
 import "./ProductCard.css";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { shopping_cart_api } from "../../utility/url";
+import axios from "axios";
 
 function ProductCard({ product }) {
   const [showModal, setShowModal] = useState(false);
   const [qty, setQty] = useState(1);
+  const navigate = useNavigate();
+  const { currentUser, isAuthenticated } = useAuth();
 
   // Calculate available stock once
   const availableStock = useMemo(
@@ -32,8 +38,40 @@ function ProductCard({ product }) {
     }
   };
 
-  const addToCart = () => {
+  const addToCart = async () => {
     console.log("Add to cart", product.id || product.productId, qty);
+    if (!isAuthenticated || currentUser == null) {
+      navigate("/login");
+    }
+
+    const payload = {
+      cartHeader: {
+        userId: currentUser.userId,
+      },
+      cartDetails: [
+        {
+          productId: product.productId,
+          count: qty,
+        },
+      ],
+    };
+
+    try {
+      const response = await axios.post(
+        shopping_cart_api + "/api/Cart/add-item",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Add to cart response:", response.data);
+    } catch (error) {
+      console.error("Error:", error.response || error.message);
+    }
+
     setShowModal(false);
     setQty(1); // Reset quantity after adding to cart
   };

@@ -126,22 +126,22 @@ const Home = () => {
   // Reviews
   const reviews = [
     {
-      name: "Aarav Sharma",
+      name: "Suraj Vidap",
       rating: 5,
       text: "Delivery was on time.",
-      avatar: "AS",
+      avatar: "SV",
     },
     {
-      name: "Priya Nair",
+      name: "Tanmay Dhakate",
       rating: 4,
       text: "Smooth shopping experience.",
-      avatar: "PN",
+      avatar: "TD",
     },
     {
-      name: "Rohit Verma",
+      name: "Gajanan Bimrot",
       rating: 5,
       text: "Good prices and genuine products.",
-      avatar: "RV",
+      avatar: "GB",
     },
   ];
 

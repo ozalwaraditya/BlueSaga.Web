@@ -2,14 +2,15 @@ import TableComponent from "../../components/table/TableComponent";
 import { product_api } from "../../utility/url";
 
 function ProductMangement() {
-  const columns = [ "Product Name", "Category", "Price"];
+  const columns = ["Product Name", "Category", "Price"];
   // columnIndexMapping
-  const columnTableIndex = [ 1, 4, 6];
+  const columnTableIndex = [1, 4, 6];
   return (
     <>
       <TableComponent
         entityName="Products"
         url={product_api + "/api/Product/GetProducts"}
+        deleteUrl={product_api + "/api/Product/DeleteProduct"}
         columns={columns}
         columnTableIndex={columnTableIndex}
         pageSize={15}
