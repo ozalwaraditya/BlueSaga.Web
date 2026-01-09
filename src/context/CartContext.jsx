@@ -11,6 +11,7 @@ function CartProvider({ children }) {
   const [finalAmount, setFinalAmount] = useState(0);
   const [cartItems, setCartItems] = useState([]);
   const { currentUser } = useAuth();
+  const [isCouponApplied, setIsCouponApplied] = useState(false);
 
   const getCart = async () => {
     // Add null check here
@@ -23,6 +24,7 @@ function CartProvider({ children }) {
       const data = response.data.response;
       console.log("userid : ", currentUser.userId);
       console.log("data ", data);
+      setIsCouponApplied(data.cartHeader.couponCode != null);
       setDiscountAmount(data.discountAmount);
       setTotalCount(data.totalAmount);
       setFinalAmount(data.finalAmount);
@@ -34,7 +36,14 @@ function CartProvider({ children }) {
 
   return (
     <CartContext.Provider
-      value={{ getCart, totalCount, discountAmount, finalAmount, cartItems }}
+      value={{
+        getCart,
+        totalCount,
+        discountAmount,
+        finalAmount,
+        cartItems,
+        isCouponApplied,
+      }}
     >
       {children}
     </CartContext.Provider>
