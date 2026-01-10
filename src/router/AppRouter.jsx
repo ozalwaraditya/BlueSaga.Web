@@ -44,7 +44,6 @@ function AppRouter() {
           <Route path="inventory" element={<InventoryManagment />} />
         </Route>
         <Route path="shopping-cart" element={<ShoppingCart />} />
-        <Route path="/orders" element={<Orders />} />
         <Route path="/products" element={<Products />} />
         <Route path="/*" element={<PageNotFound />} />
       </Routes>
