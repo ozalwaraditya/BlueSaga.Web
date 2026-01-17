@@ -5,6 +5,7 @@ import { useCart } from "../../hooks/useCart";
 import { useAuth } from "../../hooks/useAuth";
 import axios from "axios";
 import { shopping_cart_api } from "../../utility/url";
+import { useNavigate } from "react-router-dom";
 
 function ShoppingCart() {
   const [loading, setLoading] = useState(true);
@@ -15,19 +16,32 @@ function ShoppingCart() {
     discountAmount,
     finalAmount,
     cartItems,
+    cartHeader,
     isCouponApplied,
   } = useCart();
   const { currentUser } = useAuth();
   const [couponCode, setCouponCode] = useState("");
   const [status, setStatus] = useState(null);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (currentUser) {
-      getCart();
-      setLoading(false);
-    }
+    const loadCart = async () => {
+      if (currentUser) {
+        setLoading(true);
+        await getCart();
+        setLoading(false);
+      }
+    };
+
+    loadCart();
   }, [currentUser]);
+
+  useEffect(() => {
+    if (cartHeader?.couponCode) {
+      setCouponCode(cartHeader.couponCode);
+    }
+  }, [cartHeader]);
 
   const handleApply = async () => {
     setCouponLoading(true);
@@ -47,16 +61,17 @@ function ShoppingCart() {
         setStatus("success");
         setMessage("Coupon applied successfully!!!");
 
+        await getCart();
+
         setTimeout(() => {
           setStatus(null);
           setMessage("");
         }, 1000);
-        await getCart();
       } else {
         setStatus("error");
         setMessage(response.data.message || "Invalid coupon");
       }
-    } catch {
+    } catch (error) {
       setStatus("error");
       setMessage("Something went wrong. Try again.");
     } finally {
@@ -82,6 +97,7 @@ function ShoppingCart() {
         setStatus("success");
         setMessage("Coupon removed successfully");
         setCouponCode("");
+
         await getCart();
 
         setTimeout(() => {
@@ -92,7 +108,7 @@ function ShoppingCart() {
         setStatus("error");
         setMessage(response.data.message || "Failed to remove coupon");
       }
-    } catch {
+    } catch (error) {
       setStatus("error");
       setMessage("Something went wrong. Try again.");
     } finally {
@@ -101,7 +117,15 @@ function ShoppingCart() {
   };
 
   const handleCheckout = () => {
-    console.log("Proceed to checkout");
+    if (cartHeader) {
+      navigate("/orders", {
+        state: {
+          cartHeaderId: cartHeader.cartHeaderId,
+          userId: cartHeader.userId,
+          finalAmount: finalAmount,
+        },
+      });
+    }
   };
 
   const removeFromCart = async (productId, userId) => {
@@ -109,13 +133,43 @@ function ShoppingCart() {
       const response = await axios.delete(
         shopping_cart_api + `/api/Cart/remove/${productId}?userId=${userId}`
       );
-      await getCart();
 
-      console.log("Removed:", response.data);
+      await getCart();
     } catch (error) {
       console.error("Error removing item:", error);
     }
   };
+
+  const handleContinueShopping = () => {
+    navigate("/products");
+  };
+
+  if (loading) {
+    return (
+      <div className="cart-loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading your cart...</p>
+      </div>
+    );
+  }
+
+  if (!loading && (!cartItems || cartItems.length === 0)) {
+    return (
+      <div className="empty-cart-container">
+        <div className="empty-cart-content">
+          <div className="empty-cart-icon">🛒</div>
+          <h2>Your Cart is Empty</h2>
+          <p>Looks like you haven't added any items to your cart yet.</p>
+          <button
+            className="continue-shopping-btn"
+            onClick={handleContinueShopping}
+          >
+            Continue Shopping
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="main-container">
@@ -139,28 +193,31 @@ function ShoppingCart() {
           <h3>Coupon Service</h3>
 
           <div className="coupon-input-wrapper">
-            {
-              !isCouponApplied &&
-              <input
-              type="text"
-              placeholder="Enter coupon code"
-              value={couponCode}
-              disabled={isCouponApplied || couponLoading}
-              onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-            />
-            }
-
             {!isCouponApplied ? (
-              <button
-                onClick={handleApply}
-                disabled={couponLoading || !couponCode.trim()}
-              >
-                {couponLoading ? "Applying..." : "Apply"}
-              </button>
+              <>
+                <input
+                  type="text"
+                  placeholder="Enter coupon code"
+                  value={couponCode}
+                  disabled={couponLoading}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                />
+                <button
+                  onClick={handleApply}
+                  disabled={couponLoading || !couponCode.trim()}
+                >
+                  {couponLoading ? "Applying..." : "Apply"}
+                </button>
+              </>
             ) : (
-              <button onClick={handleRemoveCoupon} disabled={couponLoading}>
-                {couponLoading ? "Removing..." : "Remove"}
-              </button>
+              <>
+                <div className="applied-coupon">
+                  <span>Applied: {cartHeader?.couponCode}</span>
+                </div>
+                <button onClick={handleRemoveCoupon} disabled={couponLoading}>
+                  {couponLoading ? "Removing..." : "Remove"}
+                </button>
+              </>
             )}
           </div>
 
@@ -172,22 +229,28 @@ function ShoppingCart() {
 
           <div className="summary-row">
             <span>Total Price</span>
-            <span>₹{totalCount}</span>
+            <span>₹{totalCount.toFixed(2)}</span>
           </div>
 
-          <div className="summary-row">
-            <span>Discount Amount</span>
-            <span>₹{discountAmount}</span>
-          </div>
+          {discountAmount > 0 && (
+            <div className="summary-row discount">
+              <span>Discount Amount</span>
+              <span>-₹{discountAmount.toFixed(2)}</span>
+            </div>
+          )}
 
           <b>
             <div className="summary-row final-row">
               <span>Final Total</span>
-              <span>₹{finalAmount}</span>
+              <span>₹{finalAmount.toFixed(2)}</span>
             </div>
           </b>
 
-          <button onClick={handleCheckout} className="checkout-btn">
+          <button
+            onClick={handleCheckout}
+            className="checkout-btn"
+            disabled={cartItems.length === 0}
+          >
             CHECKOUT
           </button>
         </div>

@@ -1,0 +1,38 @@
+.order-cart {
+  border: 1px solid white;
+  border-radius: 10px;
+  width: 70%;
+  margin: 0 auto;
+  margin-top: 10%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.order-cart h3 {
+  margin: 1rem;
+}
+
+.order-information {
+  box-sizing: border-box;
+  margin: 1rem;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  width: fit-content;
+  transition: all 0.2s ease;
+  margin: 1rem;
+}
+
+.back-btn:hover {
+  background: #dbeafe;
+  transform: translateX(-3px);
+}
+

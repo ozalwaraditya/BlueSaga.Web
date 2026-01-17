@@ -14,6 +14,7 @@ function TableComponent({
   pageSize,
   addButtonNavigatePath,
   showActionButton = true,
+  showOrderActions = false,
 }) {
   const [items, setItems] = useState([]);
   const [objectColumnNames, setObjectColumnNames] = useState([]);
@@ -155,6 +156,7 @@ function TableComponent({
               <th key={index}>{column}</th>
             ))}
             {showActionButton && <th>Actions</th>}
+            {showOrderActions && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -162,7 +164,11 @@ function TableComponent({
             Array.from({ length: pageSize }).map((_, index) => (
               <tr key={index}>
                 <td
-                  colSpan={columns.length + (showActionButton ? 2 : 1)}
+                  colSpan={
+                    columns.length +
+                    (showActionButton ? 2 : 1) +
+                    (showOrderActions ? 2 : 1)
+                  }
                   style={{ textAlign: "center" }}
                 >
                   Loading...
@@ -172,7 +178,11 @@ function TableComponent({
           ) : items.length === 0 ? (
             <tr>
               <td
-                colSpan={columns.length + (showActionButton ? 2 : 1)}
+                colSpan={
+                  columns.length +
+                  (showActionButton ? 2 : 1) +
+                  (showOrderActions ? 2 : 1)
+                }
                 style={{ textAlign: "center", padding: "2rem" }}
               >
                 <div style={{ color: "#666", fontSize: "1.1rem" }}>
@@ -210,11 +220,37 @@ function TableComponent({
                       </button>
                     </td>
                   )}
+                  {showOrderActions && (
+                    <td>
+                      <button
+                        onClick={() => {
+                          navigate(
+                            addButtonNavigatePath +
+                              "/" +
+                              item[Object.keys(item)[0]],
+                            {
+                              state: item, // ✅ Pass the entire item object
+                            }
+                          );
+                        }}
+                        className="btn-edit"
+                      >
+                        Show more
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
               {Array.from({ length: emptyRowsCount }).map((_, index) => (
                 <tr key={`empty-${index}`} style={{ height: "49px" }}>
-                  <td colSpan={columns.length + (showActionButton ? 2 : 1)}>
+                  <td
+                    colSpan={
+                      columns.length +
+                      (showActionButton ? 2 : 1) +
+                      (showOrderActions ? 1 : 0)
+                    }
+                  >
+                    {" "}
                     &nbsp;
                   </td>
                 </tr>

@@ -105,8 +105,8 @@ function Header() {
             👋 Welcome, <strong>{currentUser?.name}</strong>
           </span>
 
-          <Link to="/profile" className="btn-secondary">
-            Profile
+          <Link to="/my-orders" className="btn-secondary">
+            My Order
           </Link>
 
           <button onClick={logout} className="btn-primary">

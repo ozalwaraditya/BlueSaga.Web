@@ -11,7 +11,10 @@ import CouponForm from "../pages/admin/coupon/CouponForm";
 import ProductForm from "../pages/admin/product/ProductForm";
 import ProtectedRoutes from "./ProtectedRoutes";
 import Products from "../pages/products/Products";
-import ShoppingCart from "../pages/customer/ShoppingCart";
+import ShoppingCart from "../pages/cart/ShoppingCart";
+import Orders from "../pages/orders/Orders";
+import MyOrders from "../pages/profile/MyOrder";
+import OrderDetails from "../pages/profile/OrderDetails";
 
 const Home = lazy(() => import("../pages/Home/Home"));
 const Register = lazy(() => import("../pages/auth/Register"));
@@ -24,6 +27,7 @@ function AppRouter() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        {/* Admin */}
         <Route
           path="/management/*"
           element={
@@ -43,8 +47,12 @@ function AppRouter() {
           <Route path="products-form/:id" element={<ProductForm />} />
           <Route path="inventory" element={<InventoryManagment />} />
         </Route>
+        {/* User */}
+        <Route path="my-orders" element={<MyOrders />} />
+        <Route path="my-orders/details/:id" element={<OrderDetails />} />
         <Route path="shopping-cart" element={<ShoppingCart />} />
-        <Route path="/products" element={<Products />} />
+        <Route path="orders" element={<Orders />} />
+        <Route path="products" element={<Products />} />
         <Route path="/*" element={<PageNotFound />} />
       </Routes>
     </Suspense>

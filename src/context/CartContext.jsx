@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { shopping_cart_api } from "../utility/url";
 import { useAuth } from "../hooks/useAuth";
 
@@ -10,39 +10,46 @@ function CartProvider({ children }) {
   const [discountAmount, setDiscountAmount] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
   const [cartItems, setCartItems] = useState([]);
+  const [cartHeader, setCartHeader] = useState(null);
   const { currentUser } = useAuth();
   const [isCouponApplied, setIsCouponApplied] = useState(false);
 
   const getCart = async () => {
-    // Add null check here
     if (!currentUser?.userId) return;
 
     try {
       const response = await axios.get(
         `${shopping_cart_api}/api/Cart/getcart/${currentUser.userId}`
       );
+
       const data = response.data.response;
-      console.log("userid : ", currentUser.userId);
-      console.log("data ", data);
-      setIsCouponApplied(data.cartHeader.couponCode != null);
-      setDiscountAmount(data.discountAmount);
-      setTotalCount(data.totalAmount);
-      setFinalAmount(data.finalAmount);
-      setCartItems(data.cartDetails);
+
+      setCartHeader(data.cartHeader);
+      setIsCouponApplied(data.cartHeader?.couponCode != null);
+      setDiscountAmount(data.discountAmount || 0);
+      setTotalCount(data.totalAmount || 0);
+      setFinalAmount(data.finalAmount || 0);
+      setCartItems(data.cartDetails || []);
     } catch (error) {
-      console.log("Failed to fetch cart", error);
+      console.error("Failed to fetch cart:", error);
     }
   };
 
   return (
     <CartContext.Provider
       value={{
-        getCart,
         totalCount,
         discountAmount,
         finalAmount,
         cartItems,
+        cartHeader,
         isCouponApplied,
+        getCart,
+        setCartItems,
+        setTotalCount,
+        setDiscountAmount,
+        setFinalAmount,
+        setIsCouponApplied,
       }}
     >
       {children}
